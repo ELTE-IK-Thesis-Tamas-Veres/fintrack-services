@@ -1,5 +1,16 @@
 {
   "profiles": {
+    "fintrack-api": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DATABASE_CONN_STRING": "Server=192.168.0.105;port=3306;user id=root;password=nagyonnehezjelszo134;database=finTrackDatabase;Convert Zero DateTime=True"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7101;http://localhost:5271"
+    },
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
