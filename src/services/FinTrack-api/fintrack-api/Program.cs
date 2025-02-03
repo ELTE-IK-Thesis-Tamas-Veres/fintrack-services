@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using fintrack_common.Providers;
 using System.Security.Claims;
-using fintrack_api;
+using fintrack_api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,6 +84,7 @@ builder.Services.AddAuthentication(options =>
 var app = builder.Build();
 
 app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<UserMiddleware>();
 
 app.UseCors();
 
@@ -96,7 +97,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// app.UseAuthentication();
+app.UseAuthentication();
 
 app.MapControllers();
 

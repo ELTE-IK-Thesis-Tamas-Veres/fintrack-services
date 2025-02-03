@@ -3,6 +3,7 @@ using fintrack_common.DTO.AuthDTO;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace fintrack_api.Controllers
 {
@@ -21,6 +22,8 @@ namespace fintrack_api.Controllers
         public async Task<IActionResult> Login(CancellationToken cancellationToken)
         {
             string idToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                 ?? HttpContext.User.FindFirst("sub")?.Value;
             return Ok("gggggg");
 
             
