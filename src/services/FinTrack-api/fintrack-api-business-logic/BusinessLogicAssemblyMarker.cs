@@ -1,6 +1,6 @@
 ﻿namespace fintrack_api_business_logic
 {
-    public class Class1
+    public class BusinessLogicAssemblyMarker
     {
 
     }
