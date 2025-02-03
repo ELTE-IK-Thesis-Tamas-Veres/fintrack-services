@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fintrack_database.Entities;
 
@@ -10,9 +11,11 @@ using fintrack_database.Entities;
 namespace fintrack_database.Migrations
 {
     [DbContext(typeof(FinTrackDatabaseContext))]
-    partial class FinTrackDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250203203011_FNTK-9_AddUserTable")]
+    partial class FNTK9_AddUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

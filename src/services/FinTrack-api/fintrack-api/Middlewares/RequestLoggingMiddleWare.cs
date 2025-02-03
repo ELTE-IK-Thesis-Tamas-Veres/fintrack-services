@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace fintrack_api
+namespace fintrack_api.Middlewares
 {
     public class RequestLoggingMiddleware
     {
