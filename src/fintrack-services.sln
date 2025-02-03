@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FinTrack-API", "FinTrack-AP
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{CC019514-78B6-42A6-9777-2B86BDD4C23C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fintrack-common", "services\Common\fintrack-common\fintrack-common.csproj", "{10461FC4-4578-4F0F-B926-93777B971A75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{12F7A547-A78B-4BAE-B46A-44757F6966C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12F7A547-A78B-4BAE-B46A-44757F6966C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12F7A547-A78B-4BAE-B46A-44757F6966C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10461FC4-4578-4F0F-B926-93777B971A75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10461FC4-4578-4F0F-B926-93777B971A75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10461FC4-4578-4F0F-B926-93777B971A75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10461FC4-4578-4F0F-B926-93777B971A75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{12F7A547-A78B-4BAE-B46A-44757F6966C9} = {CC019514-78B6-42A6-9777-2B86BDD4C23C}
 		{7ED61F57-C278-480A-9E4D-F27A865A7CBB} = {C753E030-55A3-4F2A-A062-75A33BDF9023}
 		{CC019514-78B6-42A6-9777-2B86BDD4C23C} = {C753E030-55A3-4F2A-A062-75A33BDF9023}
+		{10461FC4-4578-4F0F-B926-93777B971A75} = {CC019514-78B6-42A6-9777-2B86BDD4C23C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D4AFC20C-B498-4869-88F1-D805AD4517EC}
