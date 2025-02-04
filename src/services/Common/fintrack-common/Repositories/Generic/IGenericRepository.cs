@@ -16,7 +16,6 @@ namespace fintrack_common.Repositories.Generic
         void Dispose();
         ValueTask<TEntity?> FindAsync(uint primaryKey, CancellationToken token);
         IQueryable<TEntity> FullTextSearch(string cols, string text, string table);
-        IQueryable<TEntity> Get(Expression<Func<TEntity, bool>>? filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, string includeProperties = "", bool noTracking = false);
         void Insert(TEntity entity);
         void Save();
         Task SaveAsync(CancellationToken cancellationToken);
