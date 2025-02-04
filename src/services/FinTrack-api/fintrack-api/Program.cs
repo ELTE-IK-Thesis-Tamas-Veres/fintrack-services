@@ -8,6 +8,7 @@ using System.Text;
 using fintrack_common.Providers;
 using System.Security.Claims;
 using fintrack_api.Middlewares;
+using fintrack_common.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,6 +67,8 @@ builder.Services.AddDbContext<FinTrackDatabaseContext>(options =>
 });
 
 builder.Services.AddTransient<IDateTimeProvider, DateTimeProvider>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -83,7 +86,7 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
-app.UseMiddleware<RequestLoggingMiddleware>();
+//app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<UserMiddleware>();
 
 app.UseCors();
@@ -98,6 +101,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

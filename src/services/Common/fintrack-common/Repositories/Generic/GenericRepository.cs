@@ -22,47 +22,6 @@ namespace fintrack_common.Repositories.Generic
             this.context = context ?? throw new ArgumentNullException(nameof(context), "Database context is set incorrectly. Value is null: {context}");
             this.dbSet = context.Set<TEntity>();
         }
-
-        public virtual IQueryable<TEntity> Get(
-            Expression<Func<TEntity, bool>>? filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-            string includeProperties = "",
-            bool noTracking = false)
-        {
-            IQueryable<TEntity> query;
-            if (noTracking)
-            {
-
-                query = dbSet.AsNoTracking();
-            }
-            else
-            {
-                query = dbSet;
-            }
-
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            foreach (var includeProperty in includeProperties.Split
-                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                query = query.Include(includeProperty);
-            }
-
-            if (orderBy != null)
-            {
-                return orderBy(query);
-            }
-            else
-            {
-                return query;
-            }
-        }
-
-
         public void Insert(TEntity entity)
         {
             dbSet.Add(entity);

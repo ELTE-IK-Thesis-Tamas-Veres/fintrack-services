@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 
 namespace fintrack_database.Entities
 {
-    public partial class FinTrackDatabaseContext : DbContext
+    public class FinTrackDatabaseContext : DbContext
     {
+        public FinTrackDatabaseContext()
+        {
+        }
+
         public FinTrackDatabaseContext(DbContextOptions<FinTrackDatabaseContext> options)
             : base(options)
         {
