@@ -1,4 +1,5 @@
 ﻿using fintrack_api_business_logic.Handlers.CategoryHandlers;
+using fintrack_common.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,10 +32,22 @@ namespace fintrack_api.Controllers
         }
 
         [HttpPost("add")]
-        public IActionResult AddCategory ()
+        public async Task<IActionResult> AddCategory ()
         {
-            var userId = User.FindFirst("sub")?.Value;
-            return Ok(userId);
+            try
+            {
+                uint userId = HttpContext.Items["userId"] as uint? ?? throw new Exception("userId not found");
+                return Ok();
+            }
+
+            catch (RecordNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
