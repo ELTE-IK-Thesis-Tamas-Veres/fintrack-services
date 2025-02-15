@@ -15,13 +15,23 @@ namespace fintrack_database.Entities
         [Column("id")]
         public uint Id { get; set; }
 
-        [Column("user_id")]
+        [Column("userId")]
         public uint UserId { get; set; }
+
+        [Column("parentCategoryId")]
+        public uint? ParentCategoryId { get; set; }
 
         [Column("name")]
         public string Name { get; set; } = "";
 
         [ForeignKey("UserId")]
         public User User { get; set; } = new User();
+
+        [ForeignKey("ParentCategoryId")]
+        [InverseProperty("ChildCategories")]
+        public Category? ParentCategory { get; set; }
+
+        [InverseProperty("ParentCategory")]
+        public ICollection<Category> ChildCategories { get; set; } = new List<Category>();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using fintrack_api_business_logic.Handlers.CategoryHandlers;
+using fintrack_common.DTO.CategoryDTO;
 using fintrack_common.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -17,7 +18,7 @@ namespace fintrack_api.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet]
+        [HttpGet("")]
         public async Task<IActionResult> GetCategories()
         {
             try
@@ -31,12 +32,15 @@ namespace fintrack_api.Controllers
             }
         }
 
-        [HttpPost("add")]
-        public async Task<IActionResult> AddCategory ()
+        [HttpPost("")]
+        public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequest request)
         {
             try
             {
                 uint userId = HttpContext.Items["userId"] as uint? ?? throw new Exception("userId not found");
+
+                await _mediator.Send(new CreateCategoryCommand() { UserId = userId, Name = request.Name });
+
                 return Ok();
             }
 
@@ -49,5 +53,21 @@ namespace fintrack_api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete("{categoryId}")]
+        public async Task<IActionResult> DeleteCategory([FromRoute] uint categoryId)
+        {
+            try
+            {
+                await _mediator.Send(new DeleteCategoryCommand() { CategoryId = categoryId });
+                return Ok();
+            }
+            catch (RecordNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+                throw;
+            }
+        }
+        
     }
 }

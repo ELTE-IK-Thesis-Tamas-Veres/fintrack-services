@@ -27,5 +27,46 @@ namespace fintrack_common.Repositories
                 })
                 .ToListAsync(cancellationToken);
         }
+
+        public async Task<List<GetCategoryTreeNodeResponse>> GetCategoryTree(uint userId, CancellationToken cancellationToken)
+        {
+            List<Category> rootCategories = await context.Categories
+                .Where(c => c.UserId == userId && c.ParentCategoryId == null)
+                .ToListAsync(cancellationToken);
+
+            List<GetCategoryTreeNodeResponse> response = new List<GetCategoryTreeNodeResponse>();
+
+            foreach (var node in rootCategories)
+            {
+                response.Add(new GetCategoryTreeNodeResponse()
+                {
+                    Id = node.Id.ToString(),
+                    Name = node.Name,
+                    Children = await GetChildCategoryNodes(node.Id, cancellationToken)
+                });
+            }
+
+            return response;
+        }
+
+        private async Task<List<GetCategoryTreeNodeResponse>?> GetChildCategoryNodes(uint parentId, CancellationToken cancellationToken)
+        {
+            List<Category> childCategories = await context.Categories
+                .Where(c => c.ParentCategoryId == parentId)
+                .ToListAsync(cancellationToken);
+            List<GetCategoryTreeNodeResponse> childCategoryNodes = new List<GetCategoryTreeNodeResponse>();
+            foreach (Category category in childCategories)
+            {
+                GetCategoryTreeNodeResponse childCategoryNode = new GetCategoryTreeNodeResponse
+                {
+                    Id = category.Id.ToString(),
+                    Name = category.Name,
+                    Children = await GetChildCategoryNodes(category.Id, cancellationToken)
+                };
+                childCategoryNodes.Add(childCategoryNode);
+            }
+
+            return childCategoryNodes.Count > 0 ? childCategoryNodes : null;
+        }
     }
 }
