@@ -7,6 +7,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DATABASE_CONN_STRING": "Server=192.168.0.105;port=3306;user id=root;password=nagyonnehezjelszo134;database=finTrackDatabase;Convert Zero DateTime=True",
+        /*
+          $env:DATABASE_CONN_STRING='Server=192.168.0.105;port=3306;user id=root;password=nagyonnehezjelszo134;database=finTrackDatabase;Convert Zero DateTime=True'
+        */
         "AUTH0_Authority": "https://fintrack-tamasveres.eu.auth0.com/",
         "AUTH0_Audience": "fintrack-services",
         "JWT_SECRET": "Exit-Shuffle-Diving-Awhile4-Claim"

@@ -12,5 +12,6 @@ namespace fintrack_common.Repositories
     public interface ICategoryRepository : IGenericRepository<Category>
     {
         Task<List<GetCategoryResponse>> GetCategoriesByUser(uint userId, CancellationToken cancellationToken);
+        Task<List<GetCategoryTreeNodeResponse>> GetCategoryTree(uint userId, CancellationToken cancellationToken);
     }
 }
