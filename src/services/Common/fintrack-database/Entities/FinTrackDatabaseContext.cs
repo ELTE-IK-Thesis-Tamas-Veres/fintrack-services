@@ -36,6 +36,11 @@ namespace fintrack_database.Entities
                     .HasForeignKey(e => e.UserId)
                     .HasConstraintName("FK_Category_User")
                     .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.ParentCategory)
+                    .WithMany(e => e.ChildCategories)
+                    .OnDelete(DeleteBehavior.ClientCascade)
+                    .HasConstraintName("FK_Category_Category");
             });
 
             modelBuilder.Entity<User>(entity =>
