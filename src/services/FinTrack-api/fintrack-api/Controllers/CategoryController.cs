@@ -54,18 +54,76 @@ namespace fintrack_api.Controllers
             }
         }
 
-        [HttpDelete("{categoryId}")]
-        public async Task<IActionResult> DeleteCategory([FromRoute] uint categoryId)
+        [HttpPut("{categoryId}")]
+        public async Task<IActionResult> EditCategory([FromBody] EditCategoryRequest request, [FromRoute] uint categoryId)
         {
             try
             {
-                await _mediator.Send(new DeleteCategoryCommand() { CategoryId = categoryId });
+                uint userId = HttpContext.Items["userId"] as uint? ?? throw new Exception("userId not found");
+
+                await _mediator.Send(new EditCategoryCommand(request) { UserId = userId, CategoryId = categoryId });
                 return Ok();
             }
             catch (RecordNotFoundException ex)
             {
                 return NotFound(ex.Message);
-                throw;
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("")]
+        public async Task<IActionResult> EditParentOfCategories([FromBody] EditParentOfCategoriesRequest request)
+        {
+            try
+            {
+                uint userId = HttpContext.Items["userId"] as uint? ?? throw new Exception("userId not found");
+
+                await _mediator.Send(new EditParentOfCategoriesCommand(request) { UserId = userId });
+                return Ok();
+            }
+            catch (RecordNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{categoryId}")]
+        public async Task<IActionResult> DeleteCategory([FromRoute] uint categoryId)
+        {
+            try
+            {
+                uint userId = HttpContext.Items["userId"] as uint? ?? throw new Exception("userId not found");
+
+                await _mediator.Send(new DeleteCategoryCommand() { CategoryId = categoryId, UserId = userId });
+
+                return Ok();
+            }
+            catch (RecordNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
         
