@@ -13,6 +13,7 @@ namespace fintrack_api_business_logic.Handlers.CategoryHandlers
     public class DeleteCategoryCommand : IRequest
     {
         public uint CategoryId { get; set; }
+        public uint UserId { get; set; }
     }
 
     public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand>
@@ -24,13 +25,24 @@ namespace fintrack_api_business_logic.Handlers.CategoryHandlers
             _categoryRepository = categoryRepository;
         }
 
-        public async Task Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
+        public async Task Handle(DeleteCategoryCommand command, CancellationToken cancellationToken)
         {
-            Category? category = await _categoryRepository.FindAsync(request.CategoryId, cancellationToken);
+            Category? category = await _categoryRepository.GetCategoryByIdWithChildCategories(command.CategoryId, cancellationToken);
 
             if (category == null)
             {
                 throw new RecordNotFoundException("Category not found");
+            }
+
+            if (category.UserId != command.UserId)
+            {
+                throw new UnauthorizedAccessException($"userId {command.UserId} does not have access to categoryId {command.CategoryId}");
+            }
+
+            foreach(Category childCategory in category.ChildCategories)
+            {
+                childCategory.ParentCategory = null;
+                _categoryRepository.Update(childCategory);
             }
 
             _categoryRepository.Delete(category);
