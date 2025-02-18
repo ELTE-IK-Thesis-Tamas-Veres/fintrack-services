@@ -16,6 +16,14 @@ namespace fintrack_common.Repositories
         {
         }
 
+        public async Task<Category?> GetCategoryByIdWithChildCategories(uint categoryId, CancellationToken cancellationToken)
+        {
+            return await context.Categories
+                .Include(i => i.ChildCategories)
+                .Where(c => c.Id == categoryId)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
         public async Task<List<GetCategoryResponse>> GetCategoriesByUser(uint userId, CancellationToken cancellationToken)
         {
             return await context.Categories
@@ -25,7 +33,58 @@ namespace fintrack_common.Repositories
                     Id = c.Id,
                     Name = c.Name,
                 })
+                .OrderBy(c => c.Name)
                 .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Category>> GetCategoriesByCategoryIdList(List<uint> categoryIds, CancellationToken cancellationToken)
+        {
+            return await context.Categories.Where(c => categoryIds.Contains(c.Id)).ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<GetCategoryTreeNodeResponse>> GetCategoryTree(uint userId, CancellationToken cancellationToken)
+        {
+            List<Category> rootCategories = await context.Categories
+                .Where(c => c.UserId == userId && c.ParentCategoryId == null)
+                .OrderBy(c => c.Name)
+                .ToListAsync(cancellationToken);
+
+            List<GetCategoryTreeNodeResponse> response = new List<GetCategoryTreeNodeResponse>();
+
+            foreach (var node in rootCategories)
+            {
+                response.Add(new GetCategoryTreeNodeResponse()
+                {
+                    Id = node.Id.ToString(),
+                    Name = node.Name,
+                    Children = await GetChildCategoryNodes(node.Id, cancellationToken)
+                });
+            }
+
+            return response;
+        }
+
+        private async Task<List<GetCategoryTreeNodeResponse>?> GetChildCategoryNodes(uint parentId, CancellationToken cancellationToken)
+        {
+            List<Category> childCategories = await context.Categories
+                .Where(c => c.ParentCategoryId == parentId)
+                .OrderBy(c => c.Name)
+                .ToListAsync(cancellationToken);
+
+            List<GetCategoryTreeNodeResponse> childCategoryNodes = new List<GetCategoryTreeNodeResponse>();
+
+            foreach (Category category in childCategories)
+            {
+                GetCategoryTreeNodeResponse childCategoryNode = new GetCategoryTreeNodeResponse
+                {
+                    Id = category.Id.ToString(),
+                    Name = category.Name,
+                    Children = await GetChildCategoryNodes(category.Id, cancellationToken)
+                };
+                childCategoryNodes.Add(childCategoryNode);
+            }
+
+            return childCategoryNodes;
         }
     }
 }
