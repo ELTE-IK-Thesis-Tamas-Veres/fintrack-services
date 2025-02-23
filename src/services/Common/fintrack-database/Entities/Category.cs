@@ -33,5 +33,8 @@ namespace fintrack_database.Entities
 
         [InverseProperty("ParentCategory")]
         public ICollection<Category> ChildCategories { get; set; } = new List<Category>();
+
+        [InverseProperty("Category")]
+        public ICollection<Record> Records { get; set; } = new List<Record>();
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fintrack_database.Entities;
 
@@ -11,9 +12,11 @@ using fintrack_database.Entities;
 namespace fintrack_database.Migrations
 {
     [DbContext(typeof(FinTrackDatabaseContext))]
-    partial class FinTrackDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250218152042_FNTK-13_AddRecordTable")]
+    partial class FNTK13_AddRecordTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,11 +79,6 @@ namespace fintrack_database.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date")
                         .HasColumnName("date");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("description");
 
                     b.Property<uint>("UserId")
                         .HasColumnType("int unsigned")
