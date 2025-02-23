@@ -19,10 +19,12 @@ namespace fintrack_api_business_logic.Handlers.CategoryHandlers
     public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand>
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IRecordRepository _recordRepository;
 
-        public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository)
+        public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, IRecordRepository recordRepository)
         {
             _categoryRepository = categoryRepository;
+            _recordRepository = recordRepository;
         }
 
         public async Task Handle(DeleteCategoryCommand command, CancellationToken cancellationToken)
@@ -39,9 +41,19 @@ namespace fintrack_api_business_logic.Handlers.CategoryHandlers
                 throw new UnauthorizedAccessException($"userId {command.UserId} does not have access to categoryId {command.CategoryId}");
             }
 
+            List<Record> categoryRecords = await _recordRepository.GetRecordsByCategoryId(command.CategoryId, cancellationToken);
+
+            foreach (Record record in categoryRecords)
+            {
+                record.Category = category.ParentCategory;
+                _recordRepository.Update(record);
+            }
+
+            await _recordRepository.SaveAsync(cancellationToken);
+
             foreach(Category childCategory in category.ChildCategories)
             {
-                childCategory.ParentCategory = null;
+                childCategory.ParentCategory = category.ParentCategory;
                 _categoryRepository.Update(childCategory);
             }
 
