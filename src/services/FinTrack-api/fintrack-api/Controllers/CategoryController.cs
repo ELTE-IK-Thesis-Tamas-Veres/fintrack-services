@@ -18,13 +18,27 @@ namespace fintrack_api.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("")]
-        public async Task<IActionResult> GetCategories()
+        [HttpGet("tree")]
+        public async Task<IActionResult> GetCategoryTree()
         {
             try
             {
                 uint userId = HttpContext.Items["userId"] as uint? ?? throw new Exception("userId not found");
-                return Ok(await _mediator.Send(new GetCategoriesCommand() { UserId = userId}));
+                return Ok(await _mediator.Send(new GetCategoryTreeCommand() { UserId = userId}));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("")]
+        public async Task<IActionResult> GetCategories ()
+        {
+            try
+            {
+                uint userId = HttpContext.Items["userId"] as uint? ?? throw new Exception("userId not found");
+                return Ok(await _mediator.Send(new GetCategoriesCommand() { UserId = userId }));
             }
             catch (Exception ex)
             {
