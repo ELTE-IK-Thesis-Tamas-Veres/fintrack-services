@@ -17,13 +17,15 @@ namespace fintrack_api_business_logic.Handlers.CategoryHandlers
     public class GetCategoriesCommandHandler : IRequestHandler<GetCategoriesCommand, List<GetCategoryResponse>>
     {
         private readonly ICategoryRepository _categoryRepository;
+
         public GetCategoriesCommandHandler(ICategoryRepository categoryRepository)
         {
             _categoryRepository = categoryRepository;
         }
-        public async Task<List<GetCategoryResponse>> Handle(GetCategoriesCommand request, CancellationToken cancellationToken)
+
+        public async Task<List<GetCategoryResponse>> Handle(GetCategoriesCommand command, CancellationToken cancellationToken)
         {
-            return await _categoryRepository.GetCategoriesByUser(request.UserId, cancellationToken);
+            return await _categoryRepository.GetCategoriesByUser(command.UserId, cancellationToken);
         }
     }
 }

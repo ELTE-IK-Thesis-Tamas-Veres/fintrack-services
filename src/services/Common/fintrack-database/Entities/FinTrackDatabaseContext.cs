@@ -20,6 +20,7 @@ namespace fintrack_database.Entities
 
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Record> Records { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,11 +37,31 @@ namespace fintrack_database.Entities
                     .HasForeignKey(e => e.UserId)
                     .HasConstraintName("FK_Category_User")
                     .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.ParentCategory)
+                    .WithMany(e => e.ChildCategories)
+                    .OnDelete(DeleteBehavior.ClientCascade)
+                    .HasConstraintName("FK_Category_Category");
             });
 
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PRIMARY");
+            });
+
+            modelBuilder.Entity<Record>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+                entity.HasOne(e => e.Category)
+                    .WithMany(e => e.Records)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Record_Category");
+
+                entity.HasOne(e => e.User)
+                    .WithMany(e => e.Records)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Record_User");
             });
         }
     }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fintrack_database.Entities;
 
@@ -11,9 +12,11 @@ using fintrack_database.Entities;
 namespace fintrack_database.Migrations
 {
     [DbContext(typeof(FinTrackDatabaseContext))]
-    partial class FinTrackDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250213134657_FNTK-12_AddParentCategoryColumnToCategoryTable")]
+    partial class FNTK12_AddParentCategoryColumnToCategoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,46 +57,6 @@ namespace fintrack_database.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("category");
-                });
-
-            modelBuilder.Entity("fintrack_database.Entities.Record", b =>
-                {
-                    b.Property<uint>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int unsigned")
-                        .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<uint>("Id"));
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("int")
-                        .HasColumnName("amount");
-
-                    b.Property<uint?>("CategoryId")
-                        .HasColumnType("int unsigned")
-                        .HasColumnName("categoryId");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date")
-                        .HasColumnName("date");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("description");
-
-                    b.Property<uint>("UserId")
-                        .HasColumnType("int unsigned")
-                        .HasColumnName("userId");
-
-                    b.HasKey("Id")
-                        .HasName("PRIMARY");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("record");
                 });
 
             modelBuilder.Entity("fintrack_database.Entities.User", b =>
@@ -139,36 +102,14 @@ namespace fintrack_database.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("fintrack_database.Entities.Record", b =>
-                {
-                    b.HasOne("fintrack_database.Entities.Category", "Category")
-                        .WithMany("Records")
-                        .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK_Record_Category");
-
-                    b.HasOne("fintrack_database.Entities.User", "User")
-                        .WithMany("Records")
-                        .HasForeignKey("UserId")
-                        .IsRequired()
-                        .HasConstraintName("FK_Record_User");
-
-                    b.Navigation("Category");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("fintrack_database.Entities.Category", b =>
                 {
                     b.Navigation("ChildCategories");
-
-                    b.Navigation("Records");
                 });
 
             modelBuilder.Entity("fintrack_database.Entities.User", b =>
                 {
                     b.Navigation("Categories");
-
-                    b.Navigation("Records");
                 });
 #pragma warning restore 612, 618
         }
