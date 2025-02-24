@@ -22,5 +22,8 @@ namespace fintrack_database.Entities
 
         [InverseProperty("User")]
         public List<Category> Categories { get; set; } = new List<Category>();
+
+        [InverseProperty("User")]
+        public List<Record> Records { get; set; } = new List<Record>();
     }
 }

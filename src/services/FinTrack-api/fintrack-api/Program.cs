@@ -104,6 +104,7 @@ builder.Services.AddDbContext<FinTrackDatabaseContext>(options =>
 builder.Services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+builder.Services.AddTransient<IRecordRepository, RecordRepository>();
 
 builder.Services.AddAuthentication(options =>
 {
