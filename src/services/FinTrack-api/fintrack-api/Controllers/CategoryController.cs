@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace fintrack_api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class CategoryController : Controller
     {
         private readonly IMediator _mediator;

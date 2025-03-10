@@ -16,6 +16,46 @@ namespace fintrack_common.Repositories
         {
         }
 
+        public async Task<int> GetNetOfCategoryByRecordFilter (uint categoryId, Func<Record, bool> filter, CancellationToken cancellationToken)
+        {
+            Category? category = await context.Categories
+                .Include(c => c.Records)
+                .Include(c => c.ChildCategories)
+                .Where(c => c.Id == categoryId)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (category == null)
+            {
+                return 0;
+            }
+
+            int sum = category.Records
+                .Where(filter)
+                .Sum(r => r.Amount);
+
+            foreach (Category childCategory in category.ChildCategories)
+            {
+                sum += await GetNetOfCategoryByRecordFilter(childCategory.Id, filter, cancellationToken);
+            }
+
+            return sum;
+        }
+
+        public async Task<Category?> GetCategoryWithRecordsById(uint categoryId, CancellationToken cancellationToken)
+        {
+            return await context.Categories
+                .Include(c => c.Records)
+                .Where(c => c.Id == categoryId)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public async Task<List<Category>> GetCategoriesByUserIdWhereParentIsNull(uint userId, CancellationToken cancellationToken)
+        {
+            return await context.Categories
+                .Where(c => c.UserId == userId && c.ParentCategoryId == null)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<Category?> GetCategoryByIdWithChildCategories(uint categoryId, CancellationToken cancellationToken)
         {
             return await context.Categories

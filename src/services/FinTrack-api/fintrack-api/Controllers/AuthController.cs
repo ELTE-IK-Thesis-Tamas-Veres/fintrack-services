@@ -24,7 +24,7 @@ namespace fintrack_api.Controllers
             string idToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                  ?? HttpContext.User.FindFirst("sub")?.Value;
-            return Ok(new { Be = "vagy autholva geci" });            
+            return Ok(new { Be = "vagy autholva geci" });
         }
     }
 }
