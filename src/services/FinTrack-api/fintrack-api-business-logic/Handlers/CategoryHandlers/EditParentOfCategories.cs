@@ -49,7 +49,7 @@ namespace fintrack_api_business_logic.Handlers.CategoryHandlers
 
             foreach (Category category in categories)
             {
-                category.ParentCategory = parentCategory;
+                category.ParentCategoryId = parentCategory?.Id;
 
                 _categoryRepository.Update(category);
             }
