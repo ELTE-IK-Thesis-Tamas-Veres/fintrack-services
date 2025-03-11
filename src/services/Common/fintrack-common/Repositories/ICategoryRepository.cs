@@ -12,7 +12,7 @@ namespace fintrack_common.Repositories
     public interface ICategoryRepository : IGenericRepository<Category>
     {
         Task<List<Category>> GetCategoriesByCategoryIdList(List<uint> categoryIds, CancellationToken cancellationToken);
-        Task<List<GetCategoryResponse>> GetCategoriesByUser(uint userId, CancellationToken cancellationToken);
+        Task<List<Category>> GetCategoriesByUserId(uint userId, CancellationToken cancellationToken);
         Task<List<Category>> GetCategoriesByUserIdWhereParentIsNull(uint userId, CancellationToken cancellationToken);
         Task<Category?> GetCategoryByIdWithChildCategories(uint categoryId, CancellationToken cancellationToken);
         Task<List<GetCategoryTreeNodeResponse>> GetCategoryTree(uint userId, CancellationToken cancellationToken);

@@ -25,7 +25,7 @@ namespace fintrack_database.Entities
         public string Name { get; set; } = "";
 
         [ForeignKey("UserId")]
-        public User User { get; set; } = new User();
+        public User? User { get; set; }
 
         [ForeignKey("ParentCategoryId")]
         [InverseProperty("ChildCategories")]
