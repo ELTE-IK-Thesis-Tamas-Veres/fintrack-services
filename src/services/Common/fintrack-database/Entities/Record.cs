@@ -34,6 +34,6 @@ namespace fintrack_database.Entities
         public Category? Category { get; set; }
 
         [ForeignKey("UserId")]
-        public User User { get; set; } = new();
+        public User? User { get; set; }
     }
 }
