@@ -24,6 +24,7 @@ namespace fintrack_common.Repositories
         public async Task<List<Record>> GetRecordsByUserId (uint userId, CancellationToken cancellationToken)
         {
             return await context.Records
+                .Include(i => i.Category)
                 .Where(r => r.UserId == userId)
                 .ToListAsync(cancellationToken);
         }
