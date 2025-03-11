@@ -104,6 +104,39 @@ namespace fintrack_api_business_logic.Handlers.SankeyHandlers
                 });
             }
 
+            int netValueOfBudget = uncategorisedBudgetIncome + sankeyData.Links.Where(link => link.TargetText == "b").Sum(link => link.Value) - uncategorisedBudgetExpense - sankeyData.Links.Where(link => link.SourceText == "b").Sum(link => link.Value);
+
+            if (netValueOfBudget != 0)
+            {
+                SankeyNode extraNode = new SankeyNode()
+                {
+                    IdText = "b-extra",
+                };
+
+                if (netValueOfBudget > 0)
+                {
+                    extraNode.Name = "income not spent";
+                    sankeyData.Links.Add(new SankeyLink()
+                    {
+                        SourceText = "b",
+                        TargetText = "b-extra",
+                        Value = netValueOfBudget
+                    });
+                }
+                else
+                {
+                    extraNode.Name = "overspent";
+                    sankeyData.Links.Add(new SankeyLink()
+                    {
+                        SourceText = "b-extra",
+                        TargetText = "b",
+                        Value = -netValueOfBudget
+                    });
+                }
+
+                sankeyData.Nodes.Add(extraNode);
+            }
+            
             foreach (SankeyLink link in sankeyData.Links)
             {
                 link.Source = sankeyData.Nodes.FindIndex(n => n.IdText == link.SourceText);
