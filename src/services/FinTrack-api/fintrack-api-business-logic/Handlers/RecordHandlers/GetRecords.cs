@@ -1,4 +1,5 @@
-﻿using fintrack_common.DTO.RecordDTO;
+﻿using fintrack_common.DTO.CategoryDTO;
+using fintrack_common.DTO.RecordDTO;
 using fintrack_common.Repositories;
 using MediatR;
 using System;
@@ -23,9 +24,20 @@ namespace fintrack_api_business_logic.Handlers.RecordHandlers
             _recordRepository = recordRepository;
         }
         
-        public async Task<List<GetRecordResponse>> Handle(GetRecordsCommand command, CancellationToken cancellationToken)
+        public Task<List<GetRecordResponse>> Handle(GetRecordsCommand command, CancellationToken cancellationToken)
         {
-            return await _recordRepository.GetRecordsByUserId(command.UserId, cancellationToken);
+            return Task.FromResult(_recordRepository.GetRecordsByUserId(command.UserId, cancellationToken).Result.Select(record => new GetRecordResponse()
+            {
+                Id = record.Id,
+                Amount = record.Amount,
+                Date = record.Date,
+                Description = record.Description,
+                Category = record.Category == null ? null : (new GetCategoryResponse()
+                {
+                    Id = record.Category.Id,
+                    Name = record.Category.Name
+                })
+            }).ToList());
         }
     }
 }

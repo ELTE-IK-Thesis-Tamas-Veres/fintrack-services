@@ -1,13 +1,17 @@
 ﻿using fintrack_common.DTO.CategoryDTO;
 using fintrack_common.DTO.RecordDTO;
+using fintrack_common.DTO.SankeyDTO;
+using fintrack_common.Exceptions;
 using fintrack_common.Repositories.Generic;
 using fintrack_database.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace fintrack_common.Repositories
 {
@@ -17,23 +21,19 @@ namespace fintrack_common.Repositories
         {
         }
 
-        public async Task<List<GetRecordResponse>> GetRecordsByUserId (uint userId, CancellationToken cancellationToken)
+        public async Task<List<Record>> GetRecordsByUserId (uint userId, CancellationToken cancellationToken)
         {
             return await context.Records
                 .Include(i => i.Category)
                 .Where(r => r.UserId == userId)
-                .Select(record => new GetRecordResponse()
-                {
-                    Id = record.Id,
-                    Amount = record.Amount,
-                    Date = record.Date,
-                    Description = record.Description,
-                    Category = record.Category == null ? null : (new GetCategoryResponse()
-                    {
-                        Id = record.Category.Id,
-                        Name = record.Category.Name
-                    })
-                }).ToListAsync(cancellationToken);
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Record>> GetRecordByUserIdWhereCategoryIsNull (uint userId, CancellationToken cancellationToken)
+        {
+            return await context.Records
+                .Where(r => r.UserId == userId && r.CategoryId == null)
+                .ToListAsync(cancellationToken);
         }
 
         public async Task<List<Record>> GetRecordsByCategoryId (uint categoryId, CancellationToken cancellationToken)

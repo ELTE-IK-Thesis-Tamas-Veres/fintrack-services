@@ -22,8 +22,6 @@ namespace fintrack_api.Middlewares
 
             string idToken = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            Console.WriteLine("ggggggggggggggg");
-
             var handler = new JwtSecurityTokenHandler();
 
             if (handler.CanReadToken(idToken))
@@ -47,7 +45,7 @@ namespace fintrack_api.Middlewares
                     context.Items["userId"] = user.Id;
                 }
             }
-            
+
             await _next(context);
         }
     }
