@@ -16,6 +16,14 @@ namespace fintrack_common.Repositories
         {
         }
 
+        public async Task<Category?> GetCategoryByIdWithRecordsAndChildren(uint categoryId, CancellationToken cancellationToken)
+        {
+            return await context.Categories
+                .Include(i => i.Records)
+                .Include(i => i.ChildCategories)
+                .FirstOrDefaultAsync(c => c.Id == categoryId, cancellationToken);
+        }
+
         public async Task<int> GetNetOfCategoryByRecordFilter (uint categoryId, Func<Record, bool> filter, CancellationToken cancellationToken)
         {
             Category? category = await context.Categories
