@@ -15,6 +15,5 @@ namespace fintrack_common.Repositories
         Task<List<Record>> GetRecordByUserIdWhereCategoryIsNull(uint userId, CancellationToken cancellationToken);
         Task<List<Record>> GetRecordsByCategoryId(uint categoryId, CancellationToken cancellationToken);
         Task<List<Record>> GetRecordsByUserId(uint userId, CancellationToken cancellationToken);
-        Task<GetSankeyDataResponse?> GetSankeyDataWithDateFilter(uint categoryId, Func<Record, bool> recordFilter, CancellationToken cancellationToken);
     }
 }
