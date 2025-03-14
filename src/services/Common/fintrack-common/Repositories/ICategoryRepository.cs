@@ -15,6 +15,7 @@ namespace fintrack_common.Repositories
         Task<List<Category>> GetCategoriesByUserId(uint userId, CancellationToken cancellationToken);
         Task<List<Category>> GetCategoriesByUserIdWhereParentIsNull(uint userId, CancellationToken cancellationToken);
         Task<Category?> GetCategoryByIdWithChildCategories(uint categoryId, CancellationToken cancellationToken);
+        Task<Category?> GetCategoryByIdWithRecordsAndChildren(uint categoryId, CancellationToken cancellationToken);
         Task<List<GetCategoryTreeNodeResponse>> GetCategoryTree(uint userId, CancellationToken cancellationToken);
         Task<Category?> GetCategoryWithRecordsById(uint categoryId, CancellationToken cancellationToken);
         Task<int> GetNetOfCategoryByRecordFilter(uint categoryId, Func<Record, bool> filter, CancellationToken cancellationToken);
