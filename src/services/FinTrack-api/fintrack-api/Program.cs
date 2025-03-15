@@ -128,7 +128,7 @@ app.UseMiddleware<UserMiddleware>();
 app.UseCors();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || true)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -140,5 +140,20 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+//logging for daploying debug
+//var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+//// Log specific variables
+//logger.LogInformation("ASPNETCORE_ENVIRONMENT: {env}", builder.Configuration["ASPNETCORE_ENVIRONMENT"]);
+//logger.LogInformation("DATABASE_CONN_STRING: {connString}", builder.Configuration["DATABASE_CONN_STRING"]);
+//logger.LogInformation("AUTH0_Authority: {authority}", builder.Configuration["AUTH0_Authority"]);
+//logger.LogInformation("AUTH0_Audience: {audience}", builder.Configuration["AUTH0_Audience"]);
+
+//// Optionally log all configuration key-value pairs (be cautious with sensitive data)
+//foreach (var kvp in builder.Configuration.AsEnumerable())
+//{
+//    logger.LogInformation("{Key}: {Value}", kvp.Key, kvp.Value);
+//}
 
 app.Run();

@@ -1,0 +1,18 @@
+services:
+  fintrack-api:
+    # Tells Compose to build an image from a Dockerfile in your repo
+    build:
+      context: .
+      dockerfile: src/services/FinTrack-api/fintrack-api/Dockerfile
+    # Optionally give the built image a name
+    image: fintrack-api:latest
+
+    container_name: fintrack-api
+    ports:
+      - "5000:5000"
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      DATABASE_CONN_STRING: ${DATABASE_CONN_STRING}
+      AUTH0_Authority: ${AUTH0_Authority}
+      AUTH0_Audience: ${AUTH0_Audience}
+      JWT_SECRET: ${JWT_SECRET}
