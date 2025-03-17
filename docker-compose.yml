@@ -12,10 +12,3 @@ services:
 
     env_file:
       - .env
-
-    environment:
-      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
-      DATABASE_CONN_STRING: ${DATABASE_CONN_STRING}
-      AUTH0_Authority: ${AUTH0_Authority}
-      AUTH0_Audience: ${AUTH0_Audience}
-      JWT_SECRET: ${JWT_SECRET}
