@@ -12,3 +12,9 @@ services:
 
     env_file:
       - .env
+    networks:
+      - fintrack-network
+
+networks:
+  fintrack-network:
+    name: fintrack-network
