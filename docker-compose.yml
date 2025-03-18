@@ -14,10 +14,4 @@ services:
 
     env_file:
       - .env
-    networks:
-      - fintrack-network
-
-networks:
-  fintrack-network:
-    external: true
-    name: fintrack-network
+    network_mode: "host"
