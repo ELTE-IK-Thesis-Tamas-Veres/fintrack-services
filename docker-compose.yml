@@ -20,3 +20,4 @@ services:
 networks:
   fintrack-network:
     external: true
+    name: fintrack-network
