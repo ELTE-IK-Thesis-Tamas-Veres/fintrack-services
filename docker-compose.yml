@@ -17,4 +17,7 @@ services:
 
 networks:
   fintrack-network:
-    name: fintrack-network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24
