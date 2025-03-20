@@ -26,6 +26,7 @@ namespace fintrack_common.Repositories
             return await context.Records
                 .Include(i => i.Category)
                 .Where(r => r.UserId == userId)
+                .OrderByDescending(r => r.Date)
                 .ToListAsync(cancellationToken);
         }
 
