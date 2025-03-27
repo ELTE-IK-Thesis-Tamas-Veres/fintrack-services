@@ -58,15 +58,6 @@ namespace fintrack_api_business_logic.Handlers.SankeyHandlers
                 }
             }
 
-            if (sankeyData.Nodes.Count > 0)
-            {
-                sankeyData.Nodes.Add(new SankeyNode()
-                {
-                    IdText = "b",
-                    Name = "[budget]"
-                });
-            }
-
             List<Record> uncategorisedRecords = await _recordRepository.GetRecordByUserIdWhereCategoryIsNull(request.UserId, cancellationToken);
 
             int uncategorisedBudgetIncome = uncategorisedRecords.Where(r => r.Amount > 0).Sum(r => r.Amount);
@@ -137,7 +128,16 @@ namespace fintrack_api_business_logic.Handlers.SankeyHandlers
 
                 sankeyData.Nodes.Add(extraNode);
             }
-            
+
+            if (sankeyData.Nodes.Count > 0)
+            {
+                sankeyData.Nodes.Add(new SankeyNode()
+                {
+                    IdText = "b",
+                    Name = "[budget]"
+                });
+            }
+
             foreach (SankeyLink link in sankeyData.Links)
             {
                 link.Source = sankeyData.Nodes.FindIndex(n => n.IdText == link.SourceText);
