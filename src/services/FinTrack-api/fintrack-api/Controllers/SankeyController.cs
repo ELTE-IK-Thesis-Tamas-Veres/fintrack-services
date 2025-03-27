@@ -24,8 +24,7 @@ namespace fintrack_api.Controllers
         {
             try
             {
-                // uint userId = HttpContext.Items["userId"] as uint? ?? throw new Exception("userId not found");
-                uint userId = 2;
+                uint userId = HttpContext.Items["userId"] as uint? ?? throw new Exception("userId not found");
                 return Ok(await _mediator.Send(new GetSankeyDataCommand() { UserId = userId, Month = month, Year = year }));
             }
             catch (UnauthorizedAccessException ex)

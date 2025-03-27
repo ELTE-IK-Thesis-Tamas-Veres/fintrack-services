@@ -67,7 +67,7 @@ namespace fintrack_api_business_logic.Handlers.SankeyHandlers
                 sankeyData.Nodes.Add(new SankeyNode()
                 {
                     IdText = "b-iu",
-                    Name = "Uncategorised"
+                    Name = "[Uncategorised]"
                 });
 
                 sankeyData.Links.Add(new SankeyLink()
@@ -85,18 +85,18 @@ namespace fintrack_api_business_logic.Handlers.SankeyHandlers
                 sankeyData.Nodes.Add(new SankeyNode()
                 {
                     IdText = "b-xu",
-                    Name = "Uncategorised"
+                    Name = "[Uncategorised]"
                 });
 
                 sankeyData.Links.Add(new SankeyLink()
                 {
-                    SourceText = "b-xu",
-                    TargetText = "b",
+                    SourceText = "b",
+                    TargetText = "b-xu",
                     Value = uncategorisedBudgetExpense
                 });
             }
 
-            int netValueOfBudget = uncategorisedBudgetIncome + sankeyData.Links.Where(link => link.TargetText == "b").Sum(link => link.Value) - uncategorisedBudgetExpense - sankeyData.Links.Where(link => link.SourceText == "b").Sum(link => link.Value);
+            int netValueOfBudget = sankeyData.Links.Where(link => link.TargetText == "b").Sum(link => link.Value) - sankeyData.Links.Where(link => link.SourceText == "b").Sum(link => link.Value);
 
             if (netValueOfBudget != 0)
             {
@@ -107,7 +107,7 @@ namespace fintrack_api_business_logic.Handlers.SankeyHandlers
 
                 if (netValueOfBudget > 0)
                 {
-                    extraNode.Name = "income not spent";
+                    extraNode.Name = "[not spent]";
                     sankeyData.Links.Add(new SankeyLink()
                     {
                         SourceText = "b",
@@ -117,7 +117,7 @@ namespace fintrack_api_business_logic.Handlers.SankeyHandlers
                 }
                 else
                 {
-                    extraNode.Name = "overspent";
+                    extraNode.Name = "[overspent]";
                     sankeyData.Links.Add(new SankeyLink()
                     {
                         SourceText = "b-extra",
@@ -134,7 +134,7 @@ namespace fintrack_api_business_logic.Handlers.SankeyHandlers
                 sankeyData.Nodes.Add(new SankeyNode()
                 {
                     IdText = "b",
-                    Name = "budget"
+                    Name = "[budget]"
                 });
             }
 
@@ -202,7 +202,7 @@ namespace fintrack_api_business_logic.Handlers.SankeyHandlers
                     SankeyNode uncategorisedNode = new SankeyNode()
                     {
                         IdText = uncategorisedNodeId,
-                        Name = "Uncategorised"
+                        Name = "[Uncategorised]"
                     };
 
                     SankeyLink uncategorisedLink = new SankeyLink()
@@ -245,7 +245,7 @@ namespace fintrack_api_business_logic.Handlers.SankeyHandlers
                     SankeyNode uncategorised = new SankeyNode()
                     {
                         IdText = uncategorisedNodeId,
-                        Name = "Uncategorised"
+                        Name = "[Uncategorised]"
                     };
 
                     SankeyLink uncategorisedLink = new SankeyLink()
