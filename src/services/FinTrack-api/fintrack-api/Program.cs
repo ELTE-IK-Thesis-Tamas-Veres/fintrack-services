@@ -21,21 +21,6 @@ builder.Services.AddCors(options =>
             builder.AllowAnyHeader();
             builder.AllowAnyOrigin();
             builder.AllowAnyMethod();
-            /*builder.WithOrigins(
-                "*",
-                "https://*.graphisoft.hu",
-                "http://localhost:4200",
-                "https://localhost:4200",
-                "https://127.0.0.1:4200",
-                "https://127.0.0.1:4200",
-                "http://buildforge-local:4200",
-                "https://buildforge-local:4200"
-                )
-                    .SetIsOriginAllowedToAllowWildcardSubdomains()
-                    //.WithExposedHeaders(HeaderNames.Location, "Location")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();*/
         }
     );
 });
@@ -122,6 +107,38 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
+var maxMigrationRetries = 10;
+var retryDelay = TimeSpan.FromSeconds(5);
+var migrationRetries = 0;
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+while (true)
+{
+    try
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<FinTrackDatabaseContext>();
+            dbContext.Database.Migrate();
+        }
+        logger.LogInformation("Database migrated successfully.");
+        break;
+    }
+    catch (Exception)
+    {
+        migrationRetries++;
+        logger.LogError("Migration attempt {Retry}/{MaxRetries} failed. Retrying in {Delay} seconds...", migrationRetries, maxMigrationRetries, retryDelay.TotalSeconds);
+
+        if (migrationRetries >= maxMigrationRetries)
+        {
+            logger.LogCritical("Maximum retry attempts reached. Exiting.");
+            throw;
+        }
+
+        await Task.Delay(retryDelay);
+    }
+}
+
 //app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<UserMiddleware>();
 
@@ -141,16 +158,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-//logging for daploying debug
-//var logger = app.Services.GetRequiredService<ILogger<Program>>();
-
-//// Log specific variables
-//logger.LogInformation("ASPNETCORE_ENVIRONMENT: {env}", builder.Configuration["ASPNETCORE_ENVIRONMENT"]);
-//logger.LogInformation("DATABASE_CONN_STRING: {connString}", builder.Configuration["DATABASE_CONN_STRING"]);
-//logger.LogInformation("AUTH0_Authority: {authority}", builder.Configuration["AUTH0_Authority"]);
-//logger.LogInformation("AUTH0_Audience: {audience}", builder.Configuration["AUTH0_Audience"]);
-
-//// Optionally log all configuration key-value pairs (be cautious with sensitive data)
 //foreach (var kvp in builder.Configuration.AsEnumerable())
 //{
 //    logger.LogInformation("{Key}: {Value}", kvp.Key, kvp.Value);
