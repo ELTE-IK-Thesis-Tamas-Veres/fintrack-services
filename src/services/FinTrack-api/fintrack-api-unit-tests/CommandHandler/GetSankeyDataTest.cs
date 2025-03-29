@@ -99,8 +99,8 @@ namespace fintrack_api_unit_tests.CommandHandler
             Assert.Equal(4, result.Nodes.Count);
             Assert.Contains(result.Nodes, n => n.IdText == "1-i" && n.Name == "Food");
             Assert.Contains(result.Nodes, n => n.IdText == "1-x" && n.Name == "Food");
-            Assert.Contains(result.Nodes, n => n.IdText == "b" && n.Name == "budget");
-            Assert.Contains(result.Nodes, n => n.IdText == "b-extra" && n.Name == "income not spent");
+            Assert.Contains(result.Nodes, n => n.IdText == "b" && n.Name == "[budget]");
+            Assert.Contains(result.Nodes, n => n.IdText == "b-extra" && n.Name == "[not spent]");
 
             // Expected links:
             //  • From "1-i" -> "b" with value 100
@@ -146,24 +146,16 @@ namespace fintrack_api_unit_tests.CommandHandler
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
 
-            // Assert:
-            // Since no categories exist, the if (sankeyData.Nodes.Count > 0) branch does not add a budget node.
-            // But the uncategorised blocks will add:
-            //  • A node with IdText "b-iu" and a link (SourceText "b-iu" -> TargetText "b") with value 80.
-            //  • A node with IdText "b-xu" and a link (SourceText "b-xu" -> TargetText "b") with value 30.
-            // Then netValueOfBudget is computed (80 + (80+30) - 30 = 160) so an extra node ("b-extra") is added with:
-            //  • A link from "b" -> "b-extra" with value 160.
-            // Expected nodes: "b-iu", "b-xu", "b-extra"
-            // Expected links: three links referencing "b" as target or source.
-            Assert.Equal(3, result.Nodes.Count);
-            Assert.Contains(result.Nodes, n => n.IdText == "b-iu" && n.Name == "Uncategorised");
-            Assert.Contains(result.Nodes, n => n.IdText == "b-xu" && n.Name == "Uncategorised");
-            Assert.Contains(result.Nodes, n => n.IdText == "b-extra" && n.Name == "income not spent");
+            Assert.Equal(4, result.Nodes.Count);
+            Assert.Contains(result.Nodes, n => n.IdText == "b-iu" && n.Name == "[Uncategorised]");
+            Assert.Contains(result.Nodes, n => n.IdText == "b-xu" && n.Name == "[Uncategorised]");
+            Assert.Contains(result.Nodes, n => n.IdText == "b-extra" && n.Name == "[not spent]");
+            Assert.Contains(result.Nodes, n => n.IdText == "b" && n.Name == "[budget]");
 
             Assert.Equal(3, result.Links.Count);
             Assert.Contains(result.Links, l => l.SourceText == "b-iu" && l.TargetText == "b" && l.Value == 80);
-            Assert.Contains(result.Links, l => l.SourceText == "b-xu" && l.TargetText == "b" && l.Value == 30);
-            Assert.Contains(result.Links, l => l.SourceText == "b" && l.TargetText == "b-extra" && l.Value == 160);
+            Assert.Contains(result.Links, l => l.SourceText == "b" && l.TargetText == "b-xu" && l.Value == 30);
+            Assert.Contains(result.Links, l => l.SourceText == "b" && l.TargetText == "b-extra" && l.Value == 50);
 
             // Verify that each link's indices are set according to the nodes.
             foreach (var link in result.Links)

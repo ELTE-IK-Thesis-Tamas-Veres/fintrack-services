@@ -15,7 +15,21 @@ services:
     env_file:
       - .env
     networks:
-      - fintrack-network  # Connects to the fintrack-network
+      - fintrack-network # Connects to the fintrack-network
+    depends_on:
+      - fintrack-database-server # Wait for the database to be ready
+
+  fintrack-database-server:
+    image: mariadb
+    volumes:
+      - ${DATABASE_VOLUME}:/var/lib/mysql
+    container_name: fintrack-database-server
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
+    networks:
+      - fintrack-network # Connects to the fintrack-network
 
 networks:
   fintrack-network:

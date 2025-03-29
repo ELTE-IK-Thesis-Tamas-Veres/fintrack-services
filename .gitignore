@@ -399,3 +399,4 @@ FodyWeavers.xsd
 
 .env
 **/launchSettings.json
+fintrack-database-data/*
