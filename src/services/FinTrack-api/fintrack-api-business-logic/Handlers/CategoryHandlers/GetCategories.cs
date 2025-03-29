@@ -25,14 +25,12 @@ namespace fintrack_api_business_logic.Handlers.CategoryHandlers
 
         public async Task<List<GetCategoryResponse>> Handle(GetCategoriesCommand command, CancellationToken cancellationToken)
         {
-            return _categoryRepository
-                .GetCategoriesByUserId(command.UserId, cancellationToken)
-                .Result
-                .Select(c => new GetCategoryResponse
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                }).ToList();
+            var categories = await _categoryRepository.GetCategoriesByUserId(command.UserId, cancellationToken);
+            return categories.Select(c => new GetCategoryResponse
+            {
+                Id = c.Id,
+                Name = c.Name,
+            }).ToList();
         }
     }
 }
