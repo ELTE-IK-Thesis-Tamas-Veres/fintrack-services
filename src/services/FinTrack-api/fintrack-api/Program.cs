@@ -107,35 +107,40 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
-var maxMigrationRetries = 10;
-var retryDelay = TimeSpan.FromSeconds(5);
-var migrationRetries = 0;
-var logger = app.Services.GetRequiredService<ILogger<Program>>();
+bool isMigrationNeeded = builder.Configuration.GetValue<bool>("RUN_MIGRATIONS_ON_STARTUP");
 
-while (true)
+if (isMigrationNeeded)
 {
-    try
+    while (true)
     {
-        using (var scope = app.Services.CreateScope())
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<FinTrackDatabaseContext>();
-            dbContext.Database.Migrate();
-        }
-        logger.LogInformation("Database migrated successfully.");
-        break;
-    }
-    catch (Exception)
-    {
-        migrationRetries++;
-        logger.LogError("Migration attempt {Retry}/{MaxRetries} failed. Retrying in {Delay} seconds...", migrationRetries, maxMigrationRetries, retryDelay.TotalSeconds);
+        var maxMigrationRetries = 10;
+        var retryDelay = TimeSpan.FromSeconds(5);
+        var migrationRetries = 0;
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
-        if (migrationRetries >= maxMigrationRetries)
+        try
         {
-            logger.LogCritical("Maximum retry attempts reached. Exiting.");
-            throw;
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<FinTrackDatabaseContext>();
+                dbContext.Database.Migrate();
+            }
+            logger.LogInformation("Database migrated successfully.");
+            break;
         }
+        catch (Exception)
+        {
+            migrationRetries++;
+            logger.LogError("Migration attempt {Retry}/{MaxRetries} failed. Retrying in {Delay} seconds...", migrationRetries, maxMigrationRetries, retryDelay.TotalSeconds);
 
-        await Task.Delay(retryDelay);
+            if (migrationRetries >= maxMigrationRetries)
+            {
+                logger.LogCritical("Maximum retry attempts reached. Exiting.");
+                throw;
+            }
+
+            await Task.Delay(retryDelay);
+        }
     }
 }
 
