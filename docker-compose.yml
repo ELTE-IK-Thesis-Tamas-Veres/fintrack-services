@@ -9,9 +9,6 @@ services:
     container_name: fintrack-api
     image: fintrack-api:latest
 
-    ports:
-      - "5000:5000"
-
     env_file:
       - .env
     networks:
@@ -24,8 +21,6 @@ services:
     volumes:
       - ${DATABASE_VOLUME}:/var/lib/mysql
     container_name: fintrack-database-server
-    ports:
-      - "3306:3306"
     env_file:
       - .env
     networks:
