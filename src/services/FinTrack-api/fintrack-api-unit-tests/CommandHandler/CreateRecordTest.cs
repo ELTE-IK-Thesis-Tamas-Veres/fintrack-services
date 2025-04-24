@@ -111,7 +111,6 @@ namespace fintrack_api_unit_tests.CommandHandler
             };
             var command = new CreateRecordCommand(request, userId);
 
-            // Simulate category not found
             _categoryRepository.FindAsync(categoryId, Arg.Any<CancellationToken>()).Returns((Category?)null);
 
             // Act & Assert
@@ -134,7 +133,6 @@ namespace fintrack_api_unit_tests.CommandHandler
             };
             var command = new CreateRecordCommand(request, userId);
 
-            // Simulate category found but belonging to another user
             var category = new Category { Id = categoryId, UserId = 2, Name = "OtherUserCategory" };
             _categoryRepository.FindAsync(categoryId, Arg.Any<CancellationToken>()).Returns(category);
 
@@ -157,7 +155,6 @@ namespace fintrack_api_unit_tests.CommandHandler
             };
             var command = new CreateRecordCommand(request, userId);
 
-            // Simulate user not found
             _userRepository.FindAsync(userId, Arg.Any<CancellationToken>()).Returns((User?)null);
 
             // Act & Assert

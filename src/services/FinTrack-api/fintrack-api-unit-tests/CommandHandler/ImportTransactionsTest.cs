@@ -31,7 +31,6 @@ namespace fintrack_api_unit_tests.CommandHandler
             // Arrange
             uint userId = 1;
             var existingCategory = new Category { Id = 100, Name = "Groceries", UserId = userId };
-            // Simulate that the user already has the "Groceries" category.
             _categoryRepository
                 .GetCategoriesByUserId(userId, Arg.Any<CancellationToken>())
                 .Returns(new List<Category> { existingCategory });
@@ -55,16 +54,13 @@ namespace fintrack_api_unit_tests.CommandHandler
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            // No new category is inserted because "Groceries" already exists.
             _categoryRepository.DidNotReceive().Insert(Arg.Any<Category>());
-            // A record is inserted using the existing category id.
             _recordRepository.Received(1).Insert(Arg.Is<Record>(r =>
                 r.Amount == 50.0m &&
                 r.CategoryId == 100 &&
                 r.Description == "Test transaction" &&
                 r.UserId == userId
             ));
-            // Verify that SaveAsync is called on both repositories.
             await _categoryRepository.Received(1).SaveAsync(Arg.Any<CancellationToken>());
             await _recordRepository.Received(1).SaveAsync(Arg.Any<CancellationToken>());
         }
@@ -74,8 +70,6 @@ namespace fintrack_api_unit_tests.CommandHandler
         {
             // Arrange
             uint userId = 1;
-            // First call returns an empty list, meaning the category doesn't exist.
-            // After insertion, assume the category repository returns a new category with Id 200.
             _categoryRepository
                 .GetCategoriesByUserId(userId, Arg.Any<CancellationToken>())
                 .Returns(new List<Category>(), new List<Category> { new Category { Id = 200, Name = "Transport", UserId = userId } });
@@ -83,7 +77,7 @@ namespace fintrack_api_unit_tests.CommandHandler
             var transaction = new ImportTransaction
             {
                 Amount = new AmountModel () { Value = 25 },
-                TransactionDateTime = null, // Will use Booking instead.
+                TransactionDateTime = null,
                 Booking = DateTimeOffset.Now,
                 Note = "Bus fare",
                 Categories = new List<string> { "Transport" }
@@ -99,12 +93,10 @@ namespace fintrack_api_unit_tests.CommandHandler
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            // Verify that a new category "Transport" is inserted.
             _categoryRepository.Received(1).Insert(Arg.Is<Category>(c =>
                 c.Name == "Transport" && c.UserId == userId
             ));
             await _categoryRepository.Received(1).SaveAsync(Arg.Any<CancellationToken>());
-            // Verify that a record is inserted with the new category id (200).
             _recordRepository.Received(1).Insert(Arg.Is<Record>(r =>
                 r.Amount == 25.0m &&
                 r.CategoryId == 200 &&
@@ -119,7 +111,6 @@ namespace fintrack_api_unit_tests.CommandHandler
         {
             // Arrange
             uint userId = 1;
-            // Return an empty list for categories.
             _categoryRepository
                 .GetCategoriesByUserId(userId, Arg.Any<CancellationToken>())
                 .Returns(new List<Category>());
@@ -128,9 +119,9 @@ namespace fintrack_api_unit_tests.CommandHandler
             {
                 Amount = new AmountModel () { Value = 10 },
                 TransactionDateTime = DateTimeOffset.Now,
-                Booking = DateTimeOffset.Now, // Not used because TransactionDateTime exists.
+                Booking = DateTimeOffset.Now,
                 Note = "No category provided",
-                Categories = new List<string>() // No categories.
+                Categories = new List<string>()
             };
 
             var command = new ImportTransactionsCommand
@@ -143,9 +134,7 @@ namespace fintrack_api_unit_tests.CommandHandler
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            // No new category is inserted.
             _categoryRepository.DidNotReceive().Insert(Arg.Any<Category>());
-            // Record is inserted with a null CategoryId.
             _recordRepository.Received(1).Insert(Arg.Is<Record>(r =>
                 r.Amount == 10.0m &&
                 r.CategoryId == null &&
@@ -160,9 +149,7 @@ namespace fintrack_api_unit_tests.CommandHandler
         {
             // Arrange
             uint userId = 1;
-            // First call returns one existing category ("Food").
             var existingCategory = new Category { Id = 300, Name = "Food", UserId = userId };
-            // When a new category ("Drinks") is needed, the repository is refreshed.
             _categoryRepository
                 .GetCategoriesByUserId(userId, Arg.Any<CancellationToken>())
                 .Returns(new List<Category> { existingCategory },
@@ -180,7 +167,7 @@ namespace fintrack_api_unit_tests.CommandHandler
             var transaction2 = new ImportTransaction
             {
                 Amount = new AmountModel () { Value = 5 },
-                TransactionDateTime = null, // Will use Booking.
+                TransactionDateTime = null,
                 Booking = DateTimeOffset.Now,
                 Note = "Evening drink",
                 Categories = new List<string> { "Drinks" }
@@ -196,13 +183,11 @@ namespace fintrack_api_unit_tests.CommandHandler
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            // Verify that the new category "Drinks" is inserted.
             _categoryRepository.Received(1).Insert(Arg.Is<Category>(c =>
                 c.Name == "Drinks" && c.UserId == userId
             ));
             await _categoryRepository.Received(1).SaveAsync(Arg.Any<CancellationToken>());
 
-            // Verify record insertions for both transactions.
             _recordRepository.Received(1).Insert(Arg.Is<Record>(r =>
                 r.Amount == 10 &&
                 r.CategoryId == 300 &&
