@@ -27,14 +27,12 @@ namespace fintrack_api_business_logic.Handlers.StatisticsHandlers
             List<Record> records = await _recordRepository.GetRecordsByUserId(request.UserId, cancellationToken);
             List<MonthlyStatistics> monthlyStatistics = new List<MonthlyStatistics>();
 
-            // Get current month and year
             DateTime currentDate = DateTime.Now;
 
-            // Iterate through last 12 months (starting from 12 months ago up to this month)
             for (int i = 11; i >= 0; i--)
             {
-                DateTime monthDate = currentDate.AddMonths(-i); // Get the correct month/year
-                string month = monthDate.ToString("MMM"); // Format "March 2024"
+                DateTime monthDate = currentDate.AddMonths(-i);
+                string month = monthDate.ToString("MMM");
 
                 int totalIncome = records
                     .Where(r => r.Date.Month == monthDate.Month && r.Date.Year == monthDate.Year && r.Amount > 0)

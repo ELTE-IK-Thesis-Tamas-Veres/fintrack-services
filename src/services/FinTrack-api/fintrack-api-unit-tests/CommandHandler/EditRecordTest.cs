@@ -45,7 +45,6 @@ namespace fintrack_api_unit_tests.CommandHandler
                 RecordId = recordId
             };
 
-            // Create an existing record that belongs to the user.
             var record = new Record
             {
                 Id = recordId,
@@ -57,7 +56,6 @@ namespace fintrack_api_unit_tests.CommandHandler
             };
             _recordRepository.FindAsync(recordId, Arg.Any<CancellationToken>()).Returns(record);
 
-            // Simulate valid category lookup.
             var category = new Category { Id = categoryId, UserId = userId, Name = "TestCategory" };
             _categoryRepository.FindAsync(categoryId, Arg.Any<CancellationToken>()).Returns(category);
 
@@ -92,7 +90,6 @@ namespace fintrack_api_unit_tests.CommandHandler
                 RecordId = recordId
             };
 
-            // Create an existing record that belongs to the user.
             var record = new Record
             {
                 Id = recordId,
@@ -100,14 +97,13 @@ namespace fintrack_api_unit_tests.CommandHandler
                 Description = "Old description",
                 Amount = 100,
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(-1)),
-                CategoryId = 10 // previously assigned
+                CategoryId = 10
             };
             _recordRepository.FindAsync(recordId, Arg.Any<CancellationToken>()).Returns(record);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
 
-            // Assert that the record is updated and the category is set to null.
             Assert.Equal(editRequest.Description, record.Description);
             Assert.Equal(editRequest.Amount, record.Amount);
             Assert.Equal(editRequest.Date, record.Date);
@@ -161,7 +157,6 @@ namespace fintrack_api_unit_tests.CommandHandler
                 RecordId = recordId
             };
 
-            // Record belongs to a different user.
             var record = new Record
             {
                 Id = recordId,
@@ -198,7 +193,6 @@ namespace fintrack_api_unit_tests.CommandHandler
                 RecordId = recordId
             };
 
-            // Create an existing record that belongs to the user.
             var record = new Record
             {
                 Id = recordId,
@@ -210,7 +204,6 @@ namespace fintrack_api_unit_tests.CommandHandler
             };
             _recordRepository.FindAsync(recordId, Arg.Any<CancellationToken>()).Returns(record);
 
-            // Simulate invalid category by returning null.
             _categoryRepository.FindAsync(categoryId, Arg.Any<CancellationToken>()).Returns((Category?)null);
 
             // Act & Assert

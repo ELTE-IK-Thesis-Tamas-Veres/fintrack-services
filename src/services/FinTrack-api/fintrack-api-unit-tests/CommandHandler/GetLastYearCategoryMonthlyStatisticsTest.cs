@@ -37,17 +37,14 @@ namespace fintrack_api_unit_tests.CommandHandler
                 CategoryId = categoryId
             };
 
-            // Create a category with matching userId.
             var category = new Category { Id = categoryId, UserId = userId };
             _categoryRepository.GetCategoryWithRecordsById(categoryId, Arg.Any<CancellationToken>())
                 .Returns(Task.FromResult<Category?>(category));
 
-            // Stub GetNetOfCategoryByRecordFilter to always return 10.
             _categoryRepository
                 .GetNetOfCategoryByRecordFilter(categoryId, Arg.Any<Func<Record, bool>>(), Arg.Any<CancellationToken>())
                 .Returns(Task.FromResult(10));
 
-            // Capture the current date to build expected month names.
             DateTime now = DateTime.Now;
             var expectedStatistics = new List<CategoryMonthlyStatistics>();
             for (int i = 11; i >= 0; i--)
@@ -71,7 +68,6 @@ namespace fintrack_api_unit_tests.CommandHandler
                 Assert.Equal(expectedStatistics[i].Amount, result[i].Amount);
             }
 
-            // Verify that the repository method was called 12 times.
             await _categoryRepository.Received(12)
                 .GetNetOfCategoryByRecordFilter(categoryId, Arg.Any<Func<Record, bool>>(), Arg.Any<CancellationToken>());
         }
@@ -108,7 +104,6 @@ namespace fintrack_api_unit_tests.CommandHandler
                 CategoryId = categoryId
             };
 
-            // Create a category with a different userId.
             var category = new Category { Id = categoryId, UserId = 2 };
             _categoryRepository.GetCategoryWithRecordsById(categoryId, Arg.Any<CancellationToken>())
                 .Returns(Task.FromResult<Category?>(category));

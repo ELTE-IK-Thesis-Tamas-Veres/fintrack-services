@@ -61,7 +61,6 @@ namespace fintrack_api_unit_tests.CommandHandler
             // Arrange
             uint userId = 1;
             uint recordId = 10;
-            // Record belongs to a different user
             var record = new Record { Id = recordId, UserId = 2 };
             _recordRepository.FindAsync(recordId, Arg.Any<CancellationToken>()).Returns(record);
             var command = new DeleteRecordCommand { UserId = userId, RecordId = recordId };

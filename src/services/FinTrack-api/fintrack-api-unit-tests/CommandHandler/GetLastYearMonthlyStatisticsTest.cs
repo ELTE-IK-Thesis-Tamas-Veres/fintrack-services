@@ -38,8 +38,6 @@ namespace fintrack_api_unit_tests.CommandHandler
             // Assert
             Assert.Equal(12, result.Count);
             DateTime currentDate = DateTime.Now;
-            // The handler iterates for i = 11 down to 0 (oldest to newest),
-            // so the first element corresponds to currentDate.AddMonths(-11)
             for (int i = 11; i >= 0; i--)
             {
                 DateTime monthDate = currentDate.AddMonths(-i);
@@ -60,20 +58,16 @@ namespace fintrack_api_unit_tests.CommandHandler
             var command = new GetLastYearMonthlyStatisticsCommand { UserId = userId };
             DateTime now = DateTime.Now;
 
-            // Create records in specific months (using day 15 for clarity)
             var records = new List<Record>();
 
-            // For month = now.AddMonths(-2): two income records (100 and 200) and one expense record (-50)
             DateTime targetMonth1 = now.AddMonths(-2);
             records.Add(new Record { Amount = 100, Date = new DateOnly(targetMonth1.Year, targetMonth1.Month, 15) });
             records.Add(new Record { Amount = 200, Date = new DateOnly(targetMonth1.Year, targetMonth1.Month, 20) });
             records.Add(new Record { Amount = -50, Date = new DateOnly(targetMonth1.Year, targetMonth1.Month, 10) });
 
-            // For month = now.AddMonths(-5): one expense record (-100)
             DateTime targetMonth2 = now.AddMonths(-5);
             records.Add(new Record { Amount = -100, Date = new DateOnly(targetMonth2.Year, targetMonth2.Month, 5) });
 
-            // For the current month: one income record (300)
             DateTime targetMonth3 = now;
             records.Add(new Record { Amount = 300, Date = new DateOnly(targetMonth3.Year, targetMonth3.Month, 1) });
 
@@ -85,7 +79,6 @@ namespace fintrack_api_unit_tests.CommandHandler
 
             // Assert
             Assert.Equal(12, result.Count);
-            // For each month in the last 12 months, compute expected income and expense sums.
             for (int i = 11; i >= 0; i--)
             {
                 DateTime monthDate = now.AddMonths(-i);

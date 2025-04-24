@@ -61,7 +61,6 @@ namespace fintrack_api_unit_tests.CommandHandler
             // Act
             await handler.Handle(command, new CancellationToken());
 
-            // Assert: Only the category with ID 1 is updated, since that's what the handler processes.
             _categoryRepository.Received(1).Update(
                 Arg.Is<Category>(x => x.Id == 1 && x.ParentCategoryId != null && x.ParentCategoryId == 2)
             );
