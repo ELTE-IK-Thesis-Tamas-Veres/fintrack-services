@@ -60,6 +60,8 @@ namespace fintrack_api_business_logic.Handlers.SankeyHandlers
 
             List<Record> uncategorisedRecords = await _recordRepository.GetRecordByUserIdWhereCategoryIsNull(request.UserId, cancellationToken);
 
+            uncategorisedRecords = uncategorisedRecords.Where(r => recordFilter(r)).ToList();
+
             int uncategorisedBudgetIncome = uncategorisedRecords.Where(r => r.Amount > 0).Sum(r => r.Amount);
 
             if (uncategorisedBudgetIncome > 0)
